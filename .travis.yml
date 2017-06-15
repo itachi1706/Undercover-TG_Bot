@@ -1,0 +1,45 @@
+language: node_js
+node_js:
+  - '0.10'
+env:
+  global:
+    - secure: ZWzNX2yrLFnnLwbaGrKruj2rP705jqLa7ONRv8aJy5VKL1lQV8TS24Yx3mO4JS5X5WbmBd7Eexge/chrzply1+Dyjailbi33tVJCoJtQ9Dz1qo5IBA+joAzpYoQ3j8Blv0+3tfRZpAnMRjzFP6EBkvrIGFSMNTafhWGNQtdFgs5rfyt1IaFSV2M+nkVOSkjyac2LST68rmk2QxuTUq1B+mLWYBKm4RLHwgFflHXpyKe3lD6XQ5B5XUOor0dXWKheuYzCPedrrv1aax7aoHVNSGJdDA3zmCi47U7UHYCoGDJ7naivLaK+fdYxtwLW/fDcQifhPdCKGWhyMx2oErTcQJjOvnM0JNfztW8l74SoyXBNWuZg6Iz+NgRYCCQ5p5l9TLOlDcoQJ3PSXLqYiFTb3+UkZCZNCLLosp883ZYA5b7CCEzPhFKmjgHNzSRf6cRPFDUUyAEL5cLUEdwan2ZY2FxSLxNMGkvlS0WvUhlPMSOgTKl/gPIkBpcGAHC0ev2+WVPUrZ4lSv1q45mahEFFgFEUcGzkwSt+J9KnGRIymnpSAQl4VaSSpH4wJoYGOZgvgGhp8YsLxV6HdYSzIYmp+1Gyu0p1UBXqO0ndFrw41XlgSWbewUulCNfuLosZyDw29W/C4/5DHL4wpLSHK4BfguITkvckS/QmZFGpXUQToNY=
+    - secure: oSYgTQuc+wZe/n2pqzt3LJqIReIGJFKYmLthfl8fIeX3LWphD4veNEN2TyfIrbbf8af/wyNPcM3vCSS0LI8glaI33E110MYCcUzwTiFpKzzbWLZykvvNsHTpuL7vE3fF6y3D7L0+DxObrgAeS7Cgc/8HE/PzRFGZUSLj/fOXz5xrtR2V8wXtj+iIBW9UayImeiz/vFx1ZtyOUR86p/iasc8EEGHaK8OBnjNE19ao7OZRro4IbeFqqG+9W8PPUbg+rt3XUNlrwheWpP5OETBJvFu7tqI4/OjcjTimFMOIyu3wNGpJZIW7I6sfsCPCwiMg3JystPY+ANUDZpqdaGNWxZI18lZ8PWPRFYdwrYkn8FzskQdhzDBoCrpMA+Zgq79dHhdsIRvYFWmGjnzZlvOrcO9+s84WdadV56YcQRe/GnO3BqzP6OskpaJHa+8L6o4jF6VeUZfWU4Xh41abM1fBC1x1m7djzi5AyuoZiaJM06JeJMSObN6XrKGRgd7sLq+GGHfIApt9n9Nij2e51oTKT0/yb9/EWWiUe2IS20e832mTCw35p2iWWYvcIQeF6k3on0KoSt0qQou4UT+HlUD2n/qncSyIozL1hn67NDConK2/FKHZv3lzuNVoeA9cHK3GwWTUY9fgodB2PxXfl+4VlYrAi/qH39S5VkE0S3b7vXk=
+    - secure: tX5oWohY8tTcSqds5sffdYE0LzqVocQTVX+I0vD5SQCFf08oWmzJVOOeZCRc7VDPDGqFb2HHy817Bjb0vGF2IvkYuipAPCNsD5kf6e7TnxRgnT1zwWG0GU5edHEhWaHTgoPsNbGbxiFCdRyBSB6XNNj0mnoZu7omCs+lVSX887P2iEBJTiXpkWij7FuB5ILGTzU5gxM6nCsJAa1w9wY4n0HTErwY9wATTlo58RUrfPhNm2BlozoaVCpI2g+5dtg/PtvKt1E1rUZU8Ne9TT/lvy6VtnQ9YC6y4B7Q6QFfT6/W8axKQnAcV5kRdzpeuoyg9nvB+2ciSZfQQ/4MNcZvb3dgvoMV2eEEAnQyBd2Twp6ICp+82B1KtALPf5G4Fe5f3LpATFwNl5ixVJNEKZUysdUAFH5ze3aQ3QHMXn7IK0ksQmMgaPqu0XV+5vVbaztnSE0s2KtKoO/3p//mvNUJfgzUFr9UHqj9Q6lWUiTb/SFTsWDA4rHk8mQuk0hNffT4ApV6N/bPUm/MDiIEzFxvCDwaTtvElQqNrVLhmHHDiV4FPX9BL30qlEcsuiC/ycTOFHGwVPoWgke9KMwPeQ2pgu8PkE1JM6NEqHxsFx1SIt9BU+iQAJAEF7m1uq7utSgJAf+F08jpZ3uBioWV8ggYBN25os1tw7eo2LIH3iZQbQ4=
+    - secure: rs70ymTmzOmxVhunw44xxoWkuVaEEmERf8Dy/k2Vy4zvODGybaUkhhMPpkNTjkf5xfxqE//BPR0PKUpM7MOcg8d52YD3ueXYYpOUnwaeg9FZ0HERc7Xfl5pXVazCQDo2Qr6I9ecc3CGXF6GtbbSy9V+wuG7JA7gTgpRxXgVuYHhQLt1DTrNh3Ge4bIAlA2eqA4VDdOWsNZKHBwP7R/z1r4YgwrQ/9fptOKN1K5aUOU7xV0Mpgput0KHbt8lxaX6IDrVBqhGcF1F0dPn33lw/4IWKB29VDmXOMLTkXm4UEVtdhGx7tOaLINyIls8opgA+faTsBbfP6bB+IcW/OqKyCzee9oUvKpc0HixSLAUwRwQXYZ5sCm3G/PqGMb3y9nmRrC2eBwfmNpJI0W9t3xVGEE/0OgYb56egVWu6EH+gO0Nhq0HgnZHCDAr7MhpFoACFZQiOBy+j5MkeQFNu3WDB9TqLBeu44h6AEl7kizx4ysmNUy2mF2KtOGeigK/kNDemhSaEgAli9aMcT55Vht9FecXsOouK6L/0/ktxjKVajONGFxmC2yJ8yLAYSZlrjir3RlSnQiIeefZD/eJ9JzC/IBM5iGRlTn3AtFCwe8G60qeLSch2FzhlBdlsukbGaPkCIUw0Eq1ZsVD32qXTZ/WBd/89f3Lhxk2+6QXhoFjDM2I=
+addons:
+    apt:
+        packages:
+            - sshpass
+script: npm -v
+after_success:
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && cat $TRAVIS_COMMIT > version.txt
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mkdir out
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mv * out
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && tar -czf build.tgz out
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && export SSHPASS=$DEPLOY_PASS
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && sshpass -e scp -o stricthostkeychecking=no package.tgz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/deploy-tg-bot.sh
+- echo Success
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && echo Deployed to server
+after_failure:
+- echo fail
+notifications:
+  irc:
+    channels:
+    - chat.freenode.net#itachi1706mc
+    - irc.esper.net#itachi1706
+    on_success: always
+    on_failure: always
+    template:
+    - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{commit_subject}"
+    - 'Build Status : %{message}'
+    - 'Change view : %{compare_url}'
+    - 'Build details : %{build_url}'
+  email:
+    recipients:
+    - "$PRIVATE_EMAIL"
+    on_success: change
+    on_failure: always
+  slack:
+    secure: N5GcoEETvzq4FNB6bEHbEqEscCmvSv8KV8uoNT9a3Xu0Nc2QDonKN8bDbQmVnxyPZKq1rQGmTYGeginMFr2T194Jw58By9KKZor/Bcy3XCuYE1rs0pZPvadqzyF2fOe9A/Qf7BAIsTPvPQ5A9bPoQhC2qvOXdeKqEau7nImxXy86b/0rulTnQzuXoKfMSyGp2ZnzrMVJ8O69Lt/sVdjcAP/x0R0GmPI1Gd/Z0lGo0MeLQK1vTre6Pvcxgjk/RA5+ssnOpzZr00OPLVj2zx89ltc4MnbTwcg8DPYuLdsSuha8rinMdbjAm/nA5sHpbO260lg1/0bcbHNCstIAFz6ptTb0wd7XfT9FmP5eiHqAVT7Afo5UI9l+952oHk6IP7zQeEvvNQFN6q2bGmephu4Y1d+h8dBHK6Pnv5CnnQVbGQx/Oi35Mp6ielIB8Vm1qP7AMR/tHu7VFG7w1eY79RSnwAjaLGiPw58vW/x9YtxzLMktecuE8jJMi0S+F15l5GwqaaI875EPFj8lx3WZwz2ZGDcCqT8Ol/VbWcprEaMBgRDeCtZIU59a/h3xpfqmyk8LIozV9132yRqyiUUJWePUOZtx6Ypef9i5kUHGdDR+b5F8qE8pIgRp4gRm8JQ+ZKSRHPlSrPoYKCovoKnXgOUgFaFqclvwCh3Va8vxY0lGFSA=
