@@ -11,9 +11,7 @@ addons:
     apt:
         packages:
             - sshpass
-before_install:
-  - npm install -S node-telegram-bot-api
-  - npm install -S mysql
+before_install: npm install
 script: npm -v
 after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && echo $TRAVIS_COMMIT > version.txt

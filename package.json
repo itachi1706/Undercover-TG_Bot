@@ -1,0 +1,25 @@
+{
+  "name": "undercover-tg_bot",
+  "version": "1.0.0",
+  "description": "A Telegram Game Bot for Undercover",
+  "main": "server.js",
+  "dependencies": {
+    "mysql": "^2.13.0",
+    "node-telegram-bot-api": "^0.27.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itachi1706/Undercover-TG_Bot.git"
+  },
+  "author": "Kenneth Soh <kenneth@itachi1706.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/itachi1706/Undercover-TG_Bot/issues"
+  },
+  "homepage": "https://github.com/itachi1706/Undercover-TG_Bot#readme"
+}
