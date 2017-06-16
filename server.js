@@ -1,7 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api');
 const config = require('./config.js');
+const commons = require('./common-methods.js');
+const dbConnection = commons.createDbConnection(config.mysqlInfo);
 
-console.log('Initialixing Telegram Bot...');
+console.log('Initializing Telegram Bot...');
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = config.telegramBotToken;
@@ -25,7 +27,7 @@ bot.sendMessage(chatId, resp);
 
 // Listen for any kind of message. There are different kinds of
 // messages.
-console.log('Registering message swnt');
+console.log('Registering message sent');
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
 
