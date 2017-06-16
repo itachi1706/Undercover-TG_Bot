@@ -8,6 +8,7 @@
  * -3 for fail to add qn, -4 DB Unspecified Error
  */
 module.exports.createAnswer = function (db, answer, fake_answer, type) {
+    type = type.toLowerCase();
     db.getConnection((err, conn) => {
         conn.query("INSERT INTO questions_category SET ?", {name: type}, (error, results, fields) => {
             if (error) return -1;

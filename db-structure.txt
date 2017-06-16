@@ -25,6 +25,11 @@ chat_id INT [Chat.id] {Make sure that the group type [Chat.type] belongs to eith
 chat_type TEXT [Chat.type]
 chat_title TEXT [Chat.title] {Confirm there assuming type is group or supergroup}
 
+Table: players_private
+id INT AUTOINCREMENT
+player_id INT [User.id]
+chat_id INT [Chat.id] {Must be private}
+
 Table: gametype
 id INT AUTOINCREMENT
 type TEXT (Mr White, Undercover)
