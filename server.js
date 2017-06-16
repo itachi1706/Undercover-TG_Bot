@@ -25,6 +25,9 @@ console.log("Registering Global Admin Add Answer Command");
 bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
     const defType = 'general';
     let type = '';
+    let oldstring = match[1];
+    console.log('Splitting String ' + oldstring);
+    match = match[1].split(" ");
     // Not enough length
     if (match.length < 3) {
         bot.sendMessage(msg.chat.id, "Not enough arguments to register a new answer!\n" +
@@ -43,6 +46,7 @@ bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
         case -4:
         default: message = "An Unspecified DB Error occurred. Try again later"; break
     }
+    console.log("Executed command: /gadmin_add " + oldstring + ". Results: " + message);
     bot.sendMessage(msg.chat.id, message);
 });
 
