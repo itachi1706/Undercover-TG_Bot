@@ -1,0 +1,44 @@
+Database Name: undercover-tg-bot
+
+Tables: 6
+
+() - Linked to another table
+[] - Reference to Telegram API (https://core.telegram.org/bots/api)
+{} - Note
+
+
+Table: questions_category
+id INT AUTOINCREMENT
+name TEXT
+
+Table: questions
+id INT AUTOINCREMENT
+answer TEXT
+fake TEXT
+category INT (linked to questions_category)
+
+Table: players
+id INT AUTOINCREMENT
+player_id INT [User.id]
+player_name TEXT [User.first_name + User.last_name]
+chat_id INT [Chat.id] {Make sure that the group type [Chat.type] belongs to either 'group' or 'supergroup' before touching this}
+chat_type TEXT [Chat.type]
+chat_title TEXT [Chat.title] {Confirm there assuming type is group or supergroup}
+
+Table: gametype
+id INT AUTOINCREMENT
+type TEXT (Mr White, Undercover)
+
+Table: gamedata
+id INT AUTOINCREMENT
+gametype TEXT (linked to gametype)
+playercount INT
+playerseq TEXT {CSV of game_players}
+question INT (linked to questions)
+state INT {0 - Unstarted, 1 - Started, 2 - Completed, 3 - Abandoned}
+
+Table game_players
+id INT AUTOINCREMENT
+player_id INT (linked to players)
+game_id INT (linked to gamedata)
+is_fake INT {0 or 1 depending on if player is Mr White/Undercover or not}
