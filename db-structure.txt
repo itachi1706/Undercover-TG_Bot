@@ -31,7 +31,7 @@ type TEXT (Mr White, Undercover)
 
 Table: gamedata
 id INT AUTOINCREMENT
-gametype TEXT (linked to gametype)
+gametype INT (linked to gametype)
 playercount INT
 playerseq TEXT {CSV of game_players}
 question INT (linked to questions)

@@ -1,6 +1,7 @@
-module.exports.createDbConnection = function (mySqlInfo) {
+module.exports.createDbPool = function (mySqlInfo) {
     let mysql = require('mysql');
-    return mysql.createConnection({
+    return mysql.createPool({
+        connectionLimit: 100,
         host: mySqlInfo.host,
         user: mySqlInfo.user,
         password: mySqlInfo.password,
