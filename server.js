@@ -98,12 +98,12 @@ bot.onText(/\/ans (.+)/, (msg, match) => {
 
 // Matches "/accuse"
 console.log('Registering Accuse Player command');
-bot.onText(/\/abandon (.+)/, (msg, match) => {
+bot.onText(/\/accuse (.+)/, (msg, match) => {
     // TODO: Only works when game is started (state 2)
     // TODO: Only works in accuse mode (everyone given an answer and turn has yet to end
     // TODO: Accuses a player (add/update accuse table) via username (need to see how to do it)
     // TODO: When everyone accuses somebody already, kills the person
-    // TODO: If inncoent killed, continue game and increment turn, otherwise end game
+    // TODO: If innocent killed, continue game and increment turn, otherwise end game
     // TODO: If there is an equal number of players being accused, the drawn players will write normally more answers and others can change their accusations
     bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
 });
