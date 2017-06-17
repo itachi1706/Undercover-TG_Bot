@@ -21,14 +21,14 @@ Table: players
 id INT AUTOINCREMENT
 player_id INT [User.id]
 player_name TEXT [User.first_name + User.last_name]
-chat_id INT [Chat.id] {Make sure that the group type [Chat.type] belongs to either 'group' or 'supergroup' before touching this}
+chat_id BIGINT [Chat.id] {Make sure that the group type [Chat.type] belongs to either 'group' or 'supergroup' before touching this}
 chat_type TEXT [Chat.type]
 chat_title TEXT [Chat.title] {Confirm there assuming type is group or supergroup}
 
 Table: players_private
 id INT AUTOINCREMENT
 player_id INT [User.id]
-chat_id INT [Chat.id] {Must be private}
+chat_id BIGINT [Chat.id] {Must be private}
 
 Table: gametype
 id INT AUTOINCREMENT
