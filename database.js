@@ -60,7 +60,7 @@ module.exports.addUser = function (db, msg) {
         // Update stats
         db.query("UPDATE players SET player_name = ?, chat_title = ?, chat_type = ? WHERE player_id = ? AND chat_id = ?",
             [name, msg.chat.title, msg.chat.type, msg.from.id, msg.chat.id], (err, r, f) => {
-                console.log("Failed to update user details. Using old details. Error: " + err.stack);
+                if (err) console.log("Failed to update user details. Using old details. Error: " + err.stack);
             });
         return true;
     }
