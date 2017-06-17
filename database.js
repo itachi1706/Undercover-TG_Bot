@@ -41,24 +41,27 @@ module.exports.addUser = function (db, msg) {
             }
             return true;
         });
-    }
-    // Group or Supergroup
-    let name = msg.from.first_name;
-    if (typeof msg.from.last_name !== 'undefined') {
-        name += msg.from.last_name;
-    }
-    db.query("INSERT IGNORE INTO players SET ?", {player_id: msg.from.id, player_name: name, chat_id: msg.chat.id,
-    chat_type: msg.chat.type, chat_title: msg.chat.title}, (err, r, f) => {
-        if (err) {
-            console.log("An error occurred adding a new user. Error: " + err.stack);
-            console.log("User: " + msg.from.id + " | Chat: " + msg.chat.chatId);
-            return false;
+    } else {
+        // Group or Supergroup
+        let name = msg.from.first_name;
+        if (typeof msg.from.last_name !== 'undefined') {
+            name += msg.from.last_name;
         }
-    });
-    // Update stats
-    db.query("UPDATE players SET player_name = ?, chat_title = ?, chat_type = ? WHERE player_id = ? AND chat_id = ?",
-        [name, msg.chat.title, msg.chat.type, msg.from.id, msg.chat.id], (err, r, f) => {
-        console.log("Failed to update user details. Using old details. Error: " + err.stack);
-    });
-    return true;
+        db.query("INSERT IGNORE INTO players SET ?", {
+            player_id: msg.from.id, player_name: name, chat_id: msg.chat.id,
+            chat_type: msg.chat.type, chat_title: msg.chat.title
+        }, (err, r, f) => {
+            if (err) {
+                console.log("An error occurred adding a new user. Error: " + err.stack);
+                console.log("User: " + msg.from.id + " | Chat: " + msg.chat.chatId);
+                return false;
+            }
+        });
+        // Update stats
+        db.query("UPDATE players SET player_name = ?, chat_title = ?, chat_type = ? WHERE player_id = ? AND chat_id = ?",
+            [name, msg.chat.title, msg.chat.type, msg.from.id, msg.chat.id], (err, r, f) => {
+                console.log("Failed to update user details. Using old details. Error: " + err.stack);
+            });
+        return true;
+    }
 };
