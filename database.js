@@ -44,9 +44,7 @@ module.exports.addUser = function (db, msg) {
     } else {
         // Group or Supergroup
         let name = msg.from.first_name;
-        if (typeof msg.from.last_name !== 'undefined') {
-            name += msg.from.last_name;
-        }
+        if (typeof msg.from.last_name !== 'undefined') name += " " + msg.from.last_name;
         db.query("INSERT IGNORE INTO players SET ?", {
             player_id: msg.from.id, player_name: name, chat_id: msg.chat.id,
             chat_type: msg.chat.type, chat_title: msg.chat.title

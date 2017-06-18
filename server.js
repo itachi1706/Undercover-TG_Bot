@@ -17,7 +17,7 @@ const bot = new TelegramBot(token, {polling: true});
 // Matches "/echo [whatever]"
 console.log('Registering echo command');
 bot.onText(/\/echo (.+)/, (msg, match) => {
-    bot.sendMessage(msg.chat.id, match[1]);
+    sendTextMessage(msg.chat.id, match[1]);
 });
 
 // Matches "/gadmin_add <ans> <fake> [type]"
@@ -30,7 +30,7 @@ bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
     match = match[1].split("|||");
     // Not enough length
     if (match.length < 2) {
-        bot.sendMessage(msg.chat.id, "Not enough arguments to register a new answer!\n" +
+        sendTextMessage(msg.chat.id, "Not enough arguments to register a new answer!\n" +
             "You need to have a answer and a fake answer at least!\n\nFormat: /gadmin_add answer|||fake_answer|||[answer_type]" +
             "\n\nExample: If I want actual answer be Apple and fake answer be Orange under the Fruits type\n" +
             "/gadmin_add Apple|||Orange|||Fruits");
@@ -48,7 +48,7 @@ bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
         default: message = "An Unspecified Error occurred. Try again later"; break
     }
     console.log("Executed command: /gadmin_add " + oldstring + ". Results: " + message);
-    bot.sendMessage(msg.chat.id, message);
+    sendTextMessage(msg.chat.id, message);
 });
 
 // Matches "/create_game"
@@ -57,7 +57,7 @@ bot.onText(/\/create_game (.+)/, (msg, match) => {
     // TODO: Create game (add record to DB) Defaulted to undercover
     // TODO: Inline Reply Keyboard to select
     // TODO: If there is a unstarted or inprogress game (state 0 or 1), do not create a new game
-    bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
 // Matches "/start [whatever]"
@@ -67,7 +67,7 @@ bot.onText(/\/start (.+)/, (msg, match) => {
     // TODO: Randomly select a person to start and generate the sequence (probably by how they joined)
     // TODO: If game has already started or abandoned (state 1 or 3) do nothing
     // TODO: If game is completed (state 2), create a new game instance with the same settings and players
-    bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
 // Matches "/join"
@@ -75,7 +75,7 @@ console.log('Registering Join Game command');
 bot.onText(/\/join (.+)/, (msg, match) => {
     // TODO: Joins the game if its created but not started (state 0)
     // TODO: Otherwise dont join game
-    bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
 // Matches "/abandon"
@@ -83,7 +83,7 @@ console.log('Registering Abandon Game command');
 bot.onText(/\/abandon (.+)/, (msg, match) => {
     // TODO: Abandons a started or unstarted game (state 0 or 1)
     // TODO: Sets it to state 3
-    bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
 // Matches "/ans"
@@ -93,7 +93,7 @@ bot.onText(/\/ans (.+)/, (msg, match) => {
     // TODO: Sends a message of all messages for the game in the same turn
     // TODO: At the end of the turn (everyone said something. Turns table match players table), can go accuse
     // TODO: Only works when game is started (state 2) and not in accuse mode
-    bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
 // Matches "/accuse"
@@ -105,13 +105,21 @@ bot.onText(/\/accuse (.+)/, (msg, match) => {
     // TODO: When everyone accuses somebody already, kills the person
     // TODO: If innocent killed, continue game and increment turn, otherwise end game
     // TODO: If there is an equal number of players being accused, the drawn players will write normally more answers and others can change their accusations
-    bot.sendMessage(msg.chat.id, "W.I.P Check back later!");
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
 console.log('Registering any messages receiver');
 bot.on('message', (msg) => {
     // Add user to DB
+    console.log("Message Received: " + msg);
     database.addUser(dbConnection, msg);
 });
+
+function sendTextMessage(chatId, msg, options = {}) {
+    let promise = bot.sendMessage(chatId, msg, options);
+    promise.then((msg) => {
+        console.log("Sent Message: " + msg);
+    })
+}
 
 console.log('Finished initializing Telegram Bot!');
