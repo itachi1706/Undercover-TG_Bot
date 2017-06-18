@@ -68,11 +68,14 @@ bot.onText(/\/create_game\b/, (msg, match) => {
         return;
     }
 
-    if (database.getActiveGameRecord(dbConnection, msg.chat.id) != null) {
-        // Game exists, don't create new game
-        sendTextMessage(msg.chat.id, "There is currently a game existing in " + msg.chat.title + "." +
-            "\n\nIf you wish to create a new game, abandon the current game with /abandon first!");
-    } else {
+    database.getActiveGameRecord(dbConnection, msg.chat.id, (res) => {
+        if (res != null) {
+            // Game exists, don't create new game
+            sendTextMessage(msg.chat.id, "There is currently a game existing in " + msg.chat.title + "." +
+                "\n\nIf you wish to create a new game, abandon the current game with /abandon first!");
+            return;
+        }
+
         database.createGame(dbConnection, msg, (res) => {
             switch (res) {
                 case 0:
@@ -91,10 +94,10 @@ bot.onText(/\/create_game\b/, (msg, match) => {
 
                         sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
                             "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
-                            , {reply_markup: reply, reply_to_message_id: msg.chat.id})
+                            , {reply_markup: reply, reply_to_message_id: msg.message_id})
                             .then((msg) => {
                                 bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
-                                    sendTextMessage(msg.chat.id, "Selected: " + msg.text, {reply_markup: {remove_keyboard: true}});
+                                    sendTextMessage(msg.chat.id, "Selected: " + response.text, {reply_markup: {remove_keyboard: true}});
                                 });
 
                             });
@@ -105,17 +108,17 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                     break;
                 case -2:
                     sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
-                    let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
-                    if (rec == null) return;
+                    database.getActiveGameRecord(dbConnection, msg.chat.id, (rec) => {
+                        if (rec == null) return;
 
-                    if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
-                        sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
-                        return;
-                    }
+                        if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
+                            sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+                        }
+                    });
                     break;
             }
         });
-    }
+    });
 });
 
 // Matches "/start_game"
@@ -154,19 +157,20 @@ bot.onText(/\/abandon\b/, (msg, match) => {
         return;
     }
 
-    let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
-    if (rec == null) {
-        // No game
-        sendTextMessage(msg.chat.id, "There is currently no active game in " + msg.chat.title);
-        return;
-    }
+    database.getActiveGameRecord(dbConnection, msg.chat.id, (rec) => {
+        if (rec == null) {
+            // No game
+            sendTextMessage(msg.chat.id, "There is currently no active game in " + msg.chat.title);
+            return;
+        }
 
-    if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
-        sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
-        return;
-    }
+        if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
+            sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+            return;
+        }
 
-    sendTextMessage(msg.chat.id, "Abandoned game in " + msg.chat.title + " (Game #" + rec.id + ")");
+        sendTextMessage(msg.chat.id, "Abandoned game in " + msg.chat.title + " (Game #" + rec.id + ")");
+    });
 });
 
 // Matches "/ans <answer>"
