@@ -101,7 +101,7 @@ module.exports.createGame = function (db, msg, callback) {
             if (questions.length === 0) return callback(0); // Cannot start game. No questions
             let questionId = common.randomInt(0, questions.length - 1);
             db.query("INSERT INTO gamedata SET ?", {chat_id: msg.chat.id, playercount: 1, question: questionId}, (err, r, f) => {
-                if (err) return  callback(-1);
+                if (err) return callback(-1);
                 let qid = r.insertId;
                 // Add user in too
                 db.query("SELECT id from players WHERE player_id = ?", [msg.from.id], (err, r, f) => {
@@ -113,9 +113,8 @@ module.exports.createGame = function (db, msg, callback) {
                     });
                 });
             });
-            return  callback(-1);
         });
-    }); // Just in case the user is not inside
+    });
 };
 
 module.exports.getActiveGameRecord = function (db, chat_id) {

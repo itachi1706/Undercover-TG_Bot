@@ -88,7 +88,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                     for (let i = 0; i < gametypes.length; i++) {
                         keyboard.push([gametypes[i].type]);
                     }
-                    let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true, resize_keyboard: true};
+                    let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true};
 
                     sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
                         "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
