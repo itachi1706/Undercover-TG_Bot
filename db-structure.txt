@@ -62,3 +62,4 @@ id INT AUTOINCREMENT
 player_id INT (linked to players)
 accused_id INT (linked to players)
 turn_no INT
+accuse_msg_id BIGINT {so that we know which message was being accused and can give a proper inline keyboard to the person only}
