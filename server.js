@@ -152,7 +152,7 @@ bot.onText(/\/join\b/, (msg, match) => {
     database.joinGame(dbConnection, msg, (result, gid) => {
         if (!result) sendTextMessage(msg.chat.id, "Unable to join the game\n\n" +
             "The game may have already started, does not exist, or an error has occurred");
-        sendTextMessage(msg.chat.id, "Successfully joined the game at " + msg.chat.title + " (Game #" + gid + ")!")
+        else sendTextMessage(msg.chat.id, "Successfully joined the game at " + msg.chat.title + " (Game #" + gid + ")!")
     });
 });
 
