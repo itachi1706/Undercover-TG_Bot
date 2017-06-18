@@ -4,8 +4,6 @@ const commons = require('./common-methods.js');
 const database = require('./database.js');
 const util = require('util');
 
-const debug = true;
-
 console.log('Initializing Telegram Bot...');
 
 console.log('Opening Database Pool Connection...');
@@ -62,7 +60,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
         return;
     }
 
-    if (database.getActiveGameRecord(dbConnection, msg.chat.id) !== null) {
+    if (database.getActiveGameRecord(dbConnection, msg.chat.id) != null) {
         // Game exists, dont create new game
         sendTextMessage(msg.chat.id, "There is currently a game existing in " + msg.chat.title + "." +
             "\n\nIf you wish to create a new game, abandon the current game with /abandon first!");
@@ -95,7 +93,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
         case -2:
             sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
             let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
-            if (rec === null) return;
+            if (rec == null) return;
 
             if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
                 sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
@@ -142,7 +140,7 @@ bot.onText(/\/abandon\b/, (msg, match) => {
     }
 
     let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
-    if (rec === null) {
+    if (rec == null) {
         // No game
         sendTextMessage(msg.chat.id, "There is currently no active game in " + msg.chat.title);
         return;
@@ -215,14 +213,14 @@ bot.onText(/\/guess\b/, (msg, match) => {
 console.log('Registering any messages receiver');
 bot.on('message', (msg) => {
     // Add user to DB
-    if (debug) console.log("Message Received: " + util.inspect(msg, {depth:null}));
+    if (config.debug) console.log("Message Received: " + util.inspect(msg, {depth:null}));
     database.addUser(dbConnection, msg);
 });
 
 function sendTextMessage(chatId, msg, options = {}) {
     let promise = bot.sendMessage(chatId, msg, options);
     promise.then((msg) => {
-        if (debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
+        if (config.debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
     })
 }
 

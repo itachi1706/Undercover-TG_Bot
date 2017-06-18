@@ -67,6 +67,22 @@ module.exports.addUser = function (db, msg) {
 };
 
 /**
+ * Get list of questions
+ * @param db Database Object
+ * @return array Array of Questions
+ */
+module.exports.getQuestionList = function (db) {
+    db.query("SELECT * FROM questions", (err, result, f) => {
+        if (err) {
+            console.log("Error retrieving list, returning empty array");
+            return new Array(0);
+        }
+
+        return result;
+    });
+};
+
+/**
  * Creates a game instance
  * NOTE: MAKE SURE THIS IS ALREADY IN A GROUP BEFORE CREATING
  * @param db Database Object
@@ -74,8 +90,8 @@ module.exports.addUser = function (db, msg) {
  * @return int 0 - cannot start (no qns), 1 - started, -1 - DB Error, -2 - DB Error and abandon game
  */
 module.exports.createGame = function (db, msg) {
-    let questions = this.getQuestionList(db);
-    this.addUser(db, msg); // Just in case the user is not inside
+    let questions = module.exports.getQuestionList(db);
+    module.exports.addUser(db, msg); // Just in case the user is not inside
     if (questions.length === 0) return 0; // Cannot start game. No questions
 
     let questionId = common.randomInt(0, questions.length - 1);
@@ -108,22 +124,6 @@ module.exports.updateGameState = function (db, gameId, newState) {
     db.query("UPDATE gamedata SET state = ? WHERE id = ?", [newState, gameId], (err, r, f) => {
         if (err) return false; // Cannot Update
         return true;
-    });
-};
-
-/**
- * Get list of questions
- * @param db Database Object
- * @return array Array of Questions
- */
-module.exports.getQuestionList = function (db) {
-    db.query("SELECT * FROM questions", (err, result, f) => {
-        if (err) {
-            console.log("Error retrieving list, returning empty array");
-            return new Array(0);
-        }
-
-        return result;
     });
 };
 
