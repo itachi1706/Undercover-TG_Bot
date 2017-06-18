@@ -94,7 +94,10 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                         "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
                         , {reply_markup: reply, reply_to_message_id: msg.chat.id})
                         .then((msg) => {
-                        sendTextMessage(msg.chat.id, "Selected: " + msg.text, {reply_markup:{remove_keyboard:true}});
+                            bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
+                                sendTextMessage(msg.chat.id, "Selected: " + msg.text, {reply_markup:{remove_keyboard:true}});
+                            });
+
                         });
                 });
                 break;
