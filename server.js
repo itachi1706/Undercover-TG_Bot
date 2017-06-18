@@ -68,6 +68,11 @@ bot.onText(/\/create_game\b/, (msg, match) => {
         return;
     }
 
+    if (msg.from.username == null) {
+        sendTextMessage(msg.chat.id, "Game Creator does not have a username, please add a username before creating a game!");
+        return;
+    }
+
     database.getActiveGameRecord(dbConnection, msg.chat.id, (res) => {
         if (res != null) {
             // Game exists, don't create new game
@@ -100,6 +105,8 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                                     database.updateGameMode(dbConnection, gameid, response.text, (res) => {
                                         if (!res) sendTextMessage(msg.chat.id, "Unable to select gamemode/invalid gamemode selected, using default gamemode instead");
                                         let message = "*" + response.text + "* gamemode has been selected!\n\nPlayers can now go ahead to join the game with the /join command.\n" +
+                                            "Players should ensure that they have already started [me](http://telegram.me/ccn_test_game_bot) in a private chat as that will be where you get your answers" +
+                                            " and also that every player has a username.\n" +
                                             "When you are ready, do /start_game to start the game\n\n_Note: A minimum of 3 players is needed to start the game_";
 
                                         sendTextMessage(msg.chat.id, message, {parse_mode: "Markdown", reply_markup: {remove_keyboard: true}});
@@ -146,6 +153,11 @@ console.log('Registering Join Game command');
 bot.onText(/\/join\b/, (msg, match) => {
     if (!commons.isGroup(msg)) {
         sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }
+
+    if (msg.from.username == null) {
+        sendTextMessage(msg.chat.id, "You need to have a Telegram Username to join this game!", {reply_to_message_id: msg.message_id});
         return;
     }
 

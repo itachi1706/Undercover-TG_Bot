@@ -62,8 +62,8 @@ module.exports.addUser = function (db, msg, callback) {
             }
         });
         // Update stats
-        db.query("UPDATE players SET player_name = ?, chat_title = ?, chat_type = ? WHERE player_id = ? AND chat_id = ?",
-            [name, msg.chat.title, msg.chat.type, msg.from.id, msg.chat.id], (err, r, f) => {
+        db.query("UPDATE players SET player_name = ?, chat_title = ?, chat_type = ?, username = ? WHERE player_id = ? AND chat_id = ?",
+            [name, msg.chat.title, msg.chat.type, msg.from.id, msg.chat.id, msg.from.username], (err, r, f) => {
                 if (err) console.log("Failed to update user details. Using old details. Error: " + err.stack);
             });
         return callback(true);
