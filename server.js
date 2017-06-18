@@ -188,6 +188,30 @@ bot.onText(/\/accuse (.+)/, (msg, match) => {
     sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
+// Matches "/gskip"
+console.log('Registering Skip Player command');
+bot.onText(/\/gskip\b/, (msg, match) => {
+    /*if (!commons.isGroup(msg)) {
+     sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+     return;
+     }*/
+
+    // TODO: Write TODOs
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
+});
+
+// Matches "/guess"
+console.log('Registering Guess Answer command');
+bot.onText(/\/guess\b/, (msg, match) => {
+    /*if (!commons.isGroup(msg)) {
+     sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+     return;
+     }*/
+
+    // TODO: Write TODOs
+    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
+});
+
 console.log('Registering any messages receiver');
 bot.on('message', (msg) => {
     // Add user to DB

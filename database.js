@@ -99,6 +99,7 @@ module.exports.createGame = function (db, msg) {
 module.exports.getActiveGameRecord = function (db, chat_id) {
     db.query("SELECT * from gamedata WHERE chat_id = ? AND state IN (0,1) ORDER BY id DESC LIMIT 1", [chat_id], (err, r, f) => {
         if (err) return null; // No active games
+        if (r.length === 0) return null;
         return r[0];
     });
 };
