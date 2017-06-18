@@ -99,7 +99,7 @@ module.exports.createGame = function (db, msg, callback) {
     module.exports.getQuestionList(db, (questions) => {
         module.exports.addUser(db, msg, (r) => {
             if (questions.length === 0) return callback(0, 0); // Cannot start game. No questions
-            let questionId = common.randomInt(0, questions.length - 1);
+            let questionId = common.randomInt(1, questions.length);
             db.query("INSERT INTO gamedata SET ?", {chat_id: msg.chat.id, playercount: 1, question: questionId}, (err, r, f) => {
                 if (err) return callback(-1, 0);
                 let qid = r.insertId;
