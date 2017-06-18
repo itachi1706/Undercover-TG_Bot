@@ -127,7 +127,7 @@ module.exports.joinGame = function (db, msg, callback) {
 
             module.exports.getActiveGameRecord(db, msg.chat.id, (res) => {
                if (res.state === 1) return callback(false, -3);
-                db.query("INSERT INTO game_players SET ? WHERE game_id = ?", {player_id: r[0].id, game_id: res.id}, (err, r, f) => {
+                db.query("INSERT INTO game_players SET ?", {player_id: r[0].id, game_id: res.id}, (err, r, f) => {
                     if (err) return callback(false, -4);
                     return callback(true, res.id);
                 })
