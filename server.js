@@ -53,7 +53,7 @@ bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
 });
 
 // Matches "/create_game"
-console.log('Registering echo command');
+console.log('Registering Create Game command');
 bot.onText(/\/create_game\b/, (msg, match) => {
     if (!commons.isGroup(msg)) {
         sendTextMessage(msg.chat.id, "This command can only be used in a group!");
@@ -73,8 +73,11 @@ bot.onText(/\/create_game\b/, (msg, match) => {
             break;
         case 1:
             // Game Created
+            console.log("DEBUG: Game Created");
             let gametypes = database.getGameTypes(dbConnection);
 
+            console.log("DEBUG: Creating Keyboard");
+            console.log("DEBUG: gametypes: " + gametypes);
             // Create reply keyboard
             let keyboard = 'ReplyKeyboardMarkup(keyboard=[';
             for (let i = 0; i < gametypes.length; i++) {
@@ -82,10 +85,12 @@ bot.onText(/\/create_game\b/, (msg, match) => {
             }
             keyboard = keyboard.substring(0, keyboard.length - 1);
             keyboard += '],selective=true,one_time_keyboard=true)';
+            console.log("DEBUG: Keyboard: " + keyboard);
 
             sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
                 "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
                 , {reply_markup: keyboard});
+            console.log("DEBUG: Message Sent");
             break;
         case -1:
             sendTextMessage(msg.chat.id, "A DB Exception has occurred. Please try creating a game again later");

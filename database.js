@@ -96,18 +96,27 @@ module.exports.getQuestionList = function (db, callback) {
  */
 module.exports.createGame = function (db, msg) {
     module.exports.getQuestionList(db, (questions) => {
+        console.log("DEBUG: getQuestionList() executed");
         module.exports.addUser(db, msg, (r) => {
+            console.log("DEBUG: addUser() executed");
             if (questions.length === 0) return 0; // Cannot start game. No questions
             let questionId = common.randomInt(0, questions.length - 1);
+            console.log("DEBUG: questionId:" + questionId);
             db.query("INSERT INTO gamedata SET ?", {chat_id: msg.chat.id, playercount: 1, question: questionId}, (err, r, f) => {
+                console.log("DEBUG: gamedata query executed");
                 if (err) return -1;
                 let qid = r.insertId;
+                console.log("DEBUG: qid:" + qid);
                 // Add user in too
                 db.query("SELECT id from players WHERE player_id = ?", [msg.from.id], (err, r, f) => {
+                    console.log("DEBUG: player SELECT query executed");
                     if (err) return -2;
                     let playerId = r[0].id;
+                    console.log("DEBUG: playerId: " + playerId);
                     db.query("INSERT INTO game_players SET ?", {player_id: playerId, game_id: qid}, (err, r, f) => {
+                        console.log("DEBUG: game_players INSERT query executed");
                         if (err) return -2;
+                        console.log("DEBUG: Completed");
                         return 0;
                     });
                 });
