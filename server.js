@@ -97,9 +97,14 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                             , {reply_markup: reply, reply_to_message_id: msg.message_id})
                             .then((msg) => {
                                 bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
-                                    sendTextMessage(msg.chat.id, "Selected: " + response.text, {reply_markup: {remove_keyboard: true}});
-                                });
+                                    database.updateGameMode(dbConnection, gameid, response.text, (res) => {
+                                        if (!res) sendTextMessage(msg.chat.id, "Unable to select gamemode, using default gamemode instead");
+                                        let message = response.text + " gamemode has been selected!\n\nPlayers can now go ahead to join the game.\n" +
+                                            "When you are ready, do /start_game to start the game (Minimum 3 players needed)";
 
+                                        sendTextMessage(msg.chat.id, message, {reply_markup: {remove_keyboard: true}});
+                                    });
+                                });
                             });
                     });
                     break;

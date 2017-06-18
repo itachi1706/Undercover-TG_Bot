@@ -132,6 +132,18 @@ module.exports.updateGameState = function (db, gameId, newState, callback) {
     });
 };
 
+module.exports.updateGameMode = function (db, gameId, newMode, callback) {
+    let gametype = 0;
+    switch (newMode.toLowerCase().trim()) {
+        case "undercover": gametype = 0; break;
+        case "mr white": gametype = 1; break;
+    }
+    db.query("UPDATE gamedata SET gametype = ? WHERE id = ?", [gametype, gameId], (err, r, f) => {
+        if (err) return callback(false);
+        return callback(true);
+    })
+};
+
 module.exports.getGameTypes = function (db, callback) {
     db.query("SELECT * FROM gametype", (err, r, f) => {
         if (err) return callback(new Array(0));
