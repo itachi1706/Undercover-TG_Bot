@@ -80,17 +80,16 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                     console.log("DEBUG: Creating Keyboard");
                     console.log("DEBUG: gametypes: " + gametypes);
                     // Create reply keyboard
-                    let keyboard = 'ReplyKeyboardMarkup(keyboard=[';
+                    let keyboard=[];
                     for (let i = 0; i < gametypes.length; i++) {
-                        keyboard += '[KeyboardButton(text="' + gametypes[i].type + '")],';
+                        keyboard.push([gametypes[i].type]);
                     }
-                    keyboard = keyboard.substring(0, keyboard.length - 1);
-                    keyboard += '],selective=true,one_time_keyboard=true)';
-                    console.log("DEBUG: Keyboard: " + keyboard);
+                    let reply = {keyboard: [keyboard], one_time_keyboard: true, selective: true};
+                    console.log("DEBUG: Keyboard: " + reply);
 
                     sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
                         "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
-                        , {reply_markup: keyboard});
+                        , {reply_markup: reply});
                     console.log("DEBUG: Message Sent");
                 });
                 break;

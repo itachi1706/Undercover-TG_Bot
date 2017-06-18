@@ -8,9 +8,12 @@ env:
     - secure: tX5oWohY8tTcSqds5sffdYE0LzqVocQTVX+I0vD5SQCFf08oWmzJVOOeZCRc7VDPDGqFb2HHy817Bjb0vGF2IvkYuipAPCNsD5kf6e7TnxRgnT1zwWG0GU5edHEhWaHTgoPsNbGbxiFCdRyBSB6XNNj0mnoZu7omCs+lVSX887P2iEBJTiXpkWij7FuB5ILGTzU5gxM6nCsJAa1w9wY4n0HTErwY9wATTlo58RUrfPhNm2BlozoaVCpI2g+5dtg/PtvKt1E1rUZU8Ne9TT/lvy6VtnQ9YC6y4B7Q6QFfT6/W8axKQnAcV5kRdzpeuoyg9nvB+2ciSZfQQ/4MNcZvb3dgvoMV2eEEAnQyBd2Twp6ICp+82B1KtALPf5G4Fe5f3LpATFwNl5ixVJNEKZUysdUAFH5ze3aQ3QHMXn7IK0ksQmMgaPqu0XV+5vVbaztnSE0s2KtKoO/3p//mvNUJfgzUFr9UHqj9Q6lWUiTb/SFTsWDA4rHk8mQuk0hNffT4ApV6N/bPUm/MDiIEzFxvCDwaTtvElQqNrVLhmHHDiV4FPX9BL30qlEcsuiC/ycTOFHGwVPoWgke9KMwPeQ2pgu8PkE1JM6NEqHxsFx1SIt9BU+iQAJAEF7m1uq7utSgJAf+F08jpZ3uBioWV8ggYBN25os1tw7eo2LIH3iZQbQ4=
     - secure: rs70ymTmzOmxVhunw44xxoWkuVaEEmERf8Dy/k2Vy4zvODGybaUkhhMPpkNTjkf5xfxqE//BPR0PKUpM7MOcg8d52YD3ueXYYpOUnwaeg9FZ0HERc7Xfl5pXVazCQDo2Qr6I9ecc3CGXF6GtbbSy9V+wuG7JA7gTgpRxXgVuYHhQLt1DTrNh3Ge4bIAlA2eqA4VDdOWsNZKHBwP7R/z1r4YgwrQ/9fptOKN1K5aUOU7xV0Mpgput0KHbt8lxaX6IDrVBqhGcF1F0dPn33lw/4IWKB29VDmXOMLTkXm4UEVtdhGx7tOaLINyIls8opgA+faTsBbfP6bB+IcW/OqKyCzee9oUvKpc0HixSLAUwRwQXYZ5sCm3G/PqGMb3y9nmRrC2eBwfmNpJI0W9t3xVGEE/0OgYb56egVWu6EH+gO0Nhq0HgnZHCDAr7MhpFoACFZQiOBy+j5MkeQFNu3WDB9TqLBeu44h6AEl7kizx4ysmNUy2mF2KtOGeigK/kNDemhSaEgAli9aMcT55Vht9FecXsOouK6L/0/ktxjKVajONGFxmC2yJ8yLAYSZlrjir3RlSnQiIeefZD/eJ9JzC/IBM5iGRlTn3AtFCwe8G60qeLSch2FzhlBdlsukbGaPkCIUw0Eq1ZsVD32qXTZ/WBd/89f3Lhxk2+6QXhoFjDM2I=
 addons:
-    apt:
-        packages:
-            - sshpass
+  apt:
+    packages:
+      - sshpass
+cache:
+  directories:
+    - node_modules
 script: npm -v
 after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && echo $TRAVIS_COMMIT > version.txt
