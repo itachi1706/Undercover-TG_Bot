@@ -254,7 +254,7 @@ bot.onText(/\/about\b/, (msg, match) => {
     fs.readFile('./version.txt', 'utf8', (err, data) => {
         if (err) sendTextMessage(msg.chat.id, "Command error. Try again later");
         else {
-            let message = "About This Bot\n\nVersion: " + data;
+            let message = "About This Bot\n\nVersion: #" + data;
             sendTextMessage(msg.chat.id, message);
         }
     });

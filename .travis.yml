@@ -16,7 +16,7 @@ cache:
     - node_modules
 script: npm -v
 after_success:
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && echo $TRAVIS_COMMIT > version.txt
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && echo $TRAVIS_BUILD_NUMBER ($TRAVIS_COMMIT) > version.txt
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mkdir out
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && mv * out
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && tar -czf build.tgz out
