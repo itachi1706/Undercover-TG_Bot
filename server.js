@@ -69,53 +69,53 @@ bot.onText(/\/create_game\b/, (msg, match) => {
     }
 
     if (database.getActiveGameRecord(dbConnection, msg.chat.id) != null) {
-        // Game exists, dont create new game
+        // Game exists, don't create new game
         sendTextMessage(msg.chat.id, "There is currently a game existing in " + msg.chat.title + "." +
             "\n\nIf you wish to create a new game, abandon the current game with /abandon first!");
-        return;
-    }
-    database.createGame(dbConnection, msg, (res) => {
-        switch (res) {
-            case 0:
-                sendTextMessage(msg.chat.id, "Unable to create a new game, there are no Answers. " +
-                    "\n\nPlease add some Answers with the /gadmin_add answer|||fake_answer|||category command!");
-                break;
-            case 1:
-                // Game Created
-                database.getGameTypes(dbConnection, (gametypes) => {
-                    // Create reply keyboard
-                    let keyboard = [];
-                    for (let i = 0; i < gametypes.length; i++) {
-                        keyboard.push([gametypes[i].type]);
-                    }
-                    let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true};
+    } else {
+        database.createGame(dbConnection, msg, (res) => {
+            switch (res) {
+                case 0:
+                    sendTextMessage(msg.chat.id, "Unable to create a new game, there are no Answers. " +
+                        "\n\nPlease add some Answers with the /gadmin_add answer|||fake_answer|||category command!");
+                    break;
+                case 1:
+                    // Game Created
+                    database.getGameTypes(dbConnection, (gametypes) => {
+                        // Create reply keyboard
+                        let keyboard = [];
+                        for (let i = 0; i < gametypes.length; i++) {
+                            keyboard.push([gametypes[i].type]);
+                        }
+                        let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true};
 
-                    sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
-                        "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
-                        , {reply_markup: reply, reply_to_message_id: msg.chat.id})
-                        .then((msg) => {
-                            bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
-                                sendTextMessage(msg.chat.id, "Selected: " + msg.text, {reply_markup:{remove_keyboard:true}});
+                        sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
+                            "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
+                            , {reply_markup: reply, reply_to_message_id: msg.chat.id})
+                            .then((msg) => {
+                                bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
+                                    sendTextMessage(msg.chat.id, "Selected: " + msg.text, {reply_markup: {remove_keyboard: true}});
+                                });
+
                             });
+                    });
+                    break;
+                case -1:
+                    sendTextMessage(msg.chat.id, "A DB Exception has occurred. Please try creating a game again later");
+                    break;
+                case -2:
+                    sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
+                    let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
+                    if (rec == null) return;
 
-                        });
-                });
-                break;
-            case -1:
-                sendTextMessage(msg.chat.id, "A DB Exception has occurred. Please try creating a game again later");
-                break;
-            case -2:
-                sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
-                let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
-                if (rec == null) return;
-
-                if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
-                    sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
-                    return;
-                }
-                break;
-        }
-    });
+                    if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
+                        sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+                        return;
+                    }
+                    break;
+            }
+        });
+    }
 });
 
 // Matches "/start_game"
