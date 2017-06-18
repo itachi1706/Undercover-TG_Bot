@@ -104,12 +104,12 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                                 bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
                                     database.updateGameMode(dbConnection, gameid, response.text, (res) => {
                                         if (!res) sendTextMessage(msg.chat.id, "Unable to select gamemode/invalid gamemode selected, using default gamemode instead");
-                                        let message = "*" + response.text + "* gamemode has been selected!\n\nPlayers can now go ahead to join the game with the /join command.\n" +
-                                            "Players should ensure that they have already started [me](http://telegram.me/ccn_test_game_bot) in a private chat as that will be where you get your answers" +
-                                            " and also that every player has a username.\n" +
-                                            "When you are ready, do /start_game to start the game\n\n_Note: A minimum of 3 players is needed to start the game_";
+                                        let message = "<b>" + response.text + "</b> gamemode has been selected!<br/><br/>Players can now go ahead to join the game with the /join command.<br/>" +
+                                            "Players should ensure that they have already started <a href='http://telegram.me/ccn_test_game_bot'>me</a> in a private chat as that will be where you get your answers" +
+                                            " and also that every player has a username.<br/>" +
+                                            "When you are ready, do /start_game to start the game<br/><br/><i>Note: A minimum of 3 players is needed to start the game</i>";
 
-                                        sendTextMessage(msg.chat.id, message, {parse_mode: "Markdown", reply_markup: {remove_keyboard: true}});
+                                        sendTextMessage(msg.chat.id, message, {parse_mode: "HTML", reply_markup: {remove_keyboard: true}});
                                     });
                                 });
                             });
