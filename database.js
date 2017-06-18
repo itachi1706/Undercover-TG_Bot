@@ -121,14 +121,14 @@ module.exports.joinGame = function (db, msg, callback) {
     module.exports.addUser(db, msg, (r) => {
         db.query("SELECT * FROM players WHERE player_id = ? AND chat_id = ?", [msg.from.id, msg.chat.id], (err, r, f) => {
             if (err) return callback(false, 0);
-            if (r == null) return callback(false, 0);
-            if (r.length === 0) return callback(false, 0);
+            if (r == null) return callback(false, -1);
+            if (r.length === 0) return callback(false, -2);
             let pid = r[0].id;
 
             module.exports.getActiveGameRecord(db, msg.chat.id, (res) => {
-               if (res.state === 1) return callback(false, 0);
+               if (res.state === 1) return callback(false, -3);
                 db.query("INSERT INTO game_players SET ?", {player_id: r[0].id, game_id: res.id}, (err, r, f) => {
-                    if (err) return callback(false, 0);
+                    if (err) return callback(false, -4);
                     return callback(true, res.id);
                 })
             });
