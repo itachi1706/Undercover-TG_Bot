@@ -36,9 +36,10 @@ type TEXT (Mr White, Undercover)
 
 Table: gamedata
 id INT AUTOINCREMENT
+chat_id BIGINT {game belongs to which chat}
 gametype INT (linked to gametype)
 playercount INT
-playerseq TEXT {CSV of game_players}
+curplayer INT {Current Player in game_players}
 question INT (linked to questions)
 current_turn INT
 state INT(2) {0 - Unstarted, 1 - Started, 2 - Completed, 3 - Abandoned}
@@ -48,7 +49,7 @@ id INT AUTOINCREMENT
 player_id INT (linked to players)
 game_id INT (linked to gamedata)
 is_fake INT(2) {0 or 1 depending on if player is Mr White/Undercover or not}
-eliminated INT(2) (0 or 1. 1 = alive, 0 = dead)
+alive INT(2) (0 or 1. 1 = alive, 0 = dead)
 
 Table turns
 id INT AUTOINCREMENT

@@ -4,6 +4,8 @@ const commons = require('./common-methods.js');
 const database = require('./database.js');
 const util = require('util');
 
+const debug = true;
+
 console.log('Initializing Telegram Bot...');
 
 console.log('Opening Database Pool Connection...');
@@ -54,16 +56,63 @@ bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
 
 // Matches "/create_game"
 console.log('Registering echo command');
-bot.onText(/\/create_game/g, (msg, match) => {
-    // TODO: Create game (add record to DB) Defaulted to undercover
-    // TODO: Inline Reply Keyboard to select
-    // TODO: If there is a unstarted or inprogress game (state 0 or 1), do not create a new game
-    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
+bot.onText(/\/create_game\b/, (msg, match) => {
+    if (!commons.isGroup(msg)) {
+        sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }
+
+    if (database.getActiveGameRecord(dbConnection, msg.chat.id) !== null) {
+        // Game exists, dont create new game
+        sendTextMessage(msg.chat.id, "There is currently a game existing in " + msg.chat.title + "." +
+            "\n\nIf you wish to create a new game, abandon the current game with /abandon first!");
+        return;
+    }
+    switch (database.createGame(dbConnection, msg)) {
+        case 0:
+            sendTextMessage(msg.chat.id, "Unable to create a new game, there are no Answers. " +
+                "\n\nPlease add some Answers with the /gadmin_add answer|||fake_answer|||category command!");
+            break;
+        case 1:
+            // Game Created
+            let gametypes = database.getGameTypes(dbConnection);
+
+            // Create reply keyboard
+            let keyboard = 'ReplyKeyboardMarkup(keyboard=[';
+            for (let i = 0; i < gametypes.length; i++) {
+                keyboard += '[KeyboardButton(text="' + gametypes[i].type + '")],';
+            }
+            keyboard = keyboard.substring(0, keyboard.length - 1);
+            keyboard += '],selective=true,one_time_keyboard=true)';
+
+            sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
+                "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
+                , {reply_markup: keyboard});
+            break;
+        case -1:
+            sendTextMessage(msg.chat.id, "A DB Exception has occurred. Please try creating a game again later");
+            break;
+        case -2:
+            sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
+            let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
+            if (rec === null) return;
+
+            if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
+                sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+                return;
+            }
+            break;
+    }
 });
 
-// Matches "/start [whatever]"
+// Matches "/start_game"
 console.log('Registering Start Game command');
-bot.onText(/\/start (.+)/, (msg, match) => {
+bot.onText(/\/start_game\b/, (msg, match) => {
+    /*if (!commons.isGroup(msg)) {
+        sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }*/
+
     // TODO: Starts the game (state 1)
     // TODO: Randomly select a person to start and generate the sequence (probably by how they joined)
     // TODO: If game has already started or abandoned (state 1 or 3) do nothing
@@ -73,7 +122,12 @@ bot.onText(/\/start (.+)/, (msg, match) => {
 
 // Matches "/join"
 console.log('Registering Join Game command');
-bot.onText(/\/join/, (msg, match) => {
+bot.onText(/\/join\b/, (msg, match) => {
+    /*if (!commons.isGroup(msg)) {
+        sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }*/
+
     // TODO: Joins the game if its created but not started (state 0)
     // TODO: Otherwise dont join game
     sendTextMessage(msg.chat.id, "W.I.P Check back later!");
@@ -81,15 +135,35 @@ bot.onText(/\/join/, (msg, match) => {
 
 // Matches "/abandon"
 console.log('Registering Abandon Game command');
-bot.onText(/\/abandon/, (msg, match) => {
-    // TODO: Abandons a started or unstarted game (state 0 or 1)
-    // TODO: Sets it to state 3
-    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
+bot.onText(/\/abandon\b/, (msg, match) => {
+    if (!commons.isGroup(msg)) {
+        sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }
+
+    let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
+    if (rec === null) {
+        // No game
+        sendTextMessage(msg.chat.id, "There is currently no active game in " + msg.chat.title);
+        return;
+    }
+
+    if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
+        sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+        return;
+    }
+
+    sendTextMessage(msg.chat.id, "Abandoned game in " + msg.chat.title + " (Game #" + rec.id + ")");
 });
 
 // Matches "/ans <answer>"
 console.log('Registering Give Answer command');
 bot.onText(/\/ans (.+)/, (msg, match) => {
+    /*if (!commons.isGroup(msg)) {
+        sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }*/
+
     // TODO: If its your turn, give an Answer and record it down in the turns table
     // TODO: Sends a message of all messages for the game in the same turn
     // TODO: At the end of the turn (everyone said something. Turns table match players table), can go accuse
@@ -100,6 +174,11 @@ bot.onText(/\/ans (.+)/, (msg, match) => {
 // Matches "/accuse <player>"
 console.log('Registering Accuse Player command');
 bot.onText(/\/accuse (.+)/, (msg, match) => {
+    /*if (!commons.isGroup(msg)) {
+        sendTextMessage(msg.chat.id, "This command can only be used in a group!");
+        return;
+    }*/
+
     // TODO: Only works when game is started (state 2)
     // TODO: Only works in accuse mode (everyone given an answer and turn has yet to end
     // TODO: Accuses a player (add/update accuse table) via username (need to see how to do it)
@@ -112,14 +191,14 @@ bot.onText(/\/accuse (.+)/, (msg, match) => {
 console.log('Registering any messages receiver');
 bot.on('message', (msg) => {
     // Add user to DB
-    console.log("Message Received: " + util.inspect(msg, {depth:null}));
+    if (debug) console.log("Message Received: " + util.inspect(msg, {depth:null}));
     database.addUser(dbConnection, msg);
 });
 
 function sendTextMessage(chatId, msg, options = {}) {
     let promise = bot.sendMessage(chatId, msg, options);
     promise.then((msg) => {
-        console.log("Sent Message: " + util.inspect(msg, {depth:null}));
+        if (debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
     })
 }
 
