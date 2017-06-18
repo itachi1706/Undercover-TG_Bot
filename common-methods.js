@@ -1,5 +1,6 @@
+const mysql = require('mysql');
+
 module.exports.createDbPool = function (mySqlInfo) {
-    let mysql = require('mysql');
     return mysql.createPool({
         connectionLimit: 100,
         host: mySqlInfo.host,
