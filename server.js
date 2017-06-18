@@ -98,7 +98,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                             .then((msg) => {
                                 bot.onReplyToMessage(msg.chat.id, msg.message_id, (response) => {
                                     database.updateGameMode(dbConnection, gameid, response.text, (res) => {
-                                        if (!res) sendTextMessage(msg.chat.id, "Unable to select gamemode, using default gamemode instead");
+                                        if (!res) sendTextMessage(msg.chat.id, "Unable to select gamemode/invalid gamemode selected, using default gamemode instead");
                                         let message = "*" + response.text + "* gamemode has been selected!\n\nPlayers can now go ahead to join the game with the /join command.\n" +
                                             "When you are ready, do /start_game to start the game\n\n_Note: A minimum of 3 players is needed to start the game_";
 

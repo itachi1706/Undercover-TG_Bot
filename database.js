@@ -156,6 +156,7 @@ module.exports.updateGameMode = function (db, gameId, newMode, callback) {
     switch (newMode.toLowerCase().trim()) {
         case "undercover": gametype = 1; break;
         case "mr white": gametype = 2; break;
+        default: return callback(false); break;
     }
     db.query("UPDATE gamedata SET gametype = ? WHERE id = ?", [gametype, gameId], (err, r, f) => {
         if (err) return callback(false);
