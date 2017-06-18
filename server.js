@@ -53,7 +53,7 @@ bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
 
 // Matches "/create_game"
 console.log('Registering echo command');
-bot.onText(/\/create_game (.+)/, (msg, match) => {
+bot.onText(/\/create_game/g, (msg, match) => {
     // TODO: Create game (add record to DB) Defaulted to undercover
     // TODO: Inline Reply Keyboard to select
     // TODO: If there is a unstarted or inprogress game (state 0 or 1), do not create a new game
@@ -72,7 +72,7 @@ bot.onText(/\/start (.+)/, (msg, match) => {
 
 // Matches "/join"
 console.log('Registering Join Game command');
-bot.onText(/\/join (.+)/, (msg, match) => {
+bot.onText(/\/join/, (msg, match) => {
     // TODO: Joins the game if its created but not started (state 0)
     // TODO: Otherwise dont join game
     sendTextMessage(msg.chat.id, "W.I.P Check back later!");
@@ -80,13 +80,13 @@ bot.onText(/\/join (.+)/, (msg, match) => {
 
 // Matches "/abandon"
 console.log('Registering Abandon Game command');
-bot.onText(/\/abandon (.+)/, (msg, match) => {
+bot.onText(/\/abandon/, (msg, match) => {
     // TODO: Abandons a started or unstarted game (state 0 or 1)
     // TODO: Sets it to state 3
     sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
-// Matches "/ans"
+// Matches "/ans <answer>"
 console.log('Registering Give Answer command');
 bot.onText(/\/ans (.+)/, (msg, match) => {
     // TODO: If its your turn, give an Answer and record it down in the turns table
@@ -96,7 +96,7 @@ bot.onText(/\/ans (.+)/, (msg, match) => {
     sendTextMessage(msg.chat.id, "W.I.P Check back later!");
 });
 
-// Matches "/accuse"
+// Matches "/accuse <player>"
 console.log('Registering Accuse Player command');
 bot.onText(/\/accuse (.+)/, (msg, match) => {
     // TODO: Only works when game is started (state 2)
