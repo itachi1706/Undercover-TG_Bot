@@ -3,6 +3,7 @@ const config = require('./config.js');
 const commons = require('./common-methods.js');
 const database = require('./database.js');
 const util = require('util');
+const fs = require('fs');
 
 console.log('Initializing Telegram Bot...');
 
@@ -66,46 +67,48 @@ bot.onText(/\/create_game\b/, (msg, match) => {
             "\n\nIf you wish to create a new game, abandon the current game with /abandon first!");
         return;
     }
-    switch (database.createGame(dbConnection, msg)) {
-        case 0:
-            sendTextMessage(msg.chat.id, "Unable to create a new game, there are no Answers. " +
-                "\n\nPlease add some Answers with the /gadmin_add answer|||fake_answer|||category command!");
-            break;
-        case 1:
-            // Game Created
-            console.log("DEBUG: Game Created");
-            let gametypes = database.getGameTypes(dbConnection);
+    database.createGame(dbConnection, msg, (res) => {
+        switch (database.createGame(dbConnection, msg)) {
+            case 0:
+                sendTextMessage(msg.chat.id, "Unable to create a new game, there are no Answers. " +
+                    "\n\nPlease add some Answers with the /gadmin_add answer|||fake_answer|||category command!");
+                break;
+            case 1:
+                // Game Created
+                console.log("DEBUG: Game Created");
+                let gametypes = database.getGameTypes(dbConnection);
 
-            console.log("DEBUG: Creating Keyboard");
-            console.log("DEBUG: gametypes: " + gametypes);
-            // Create reply keyboard
-            let keyboard = 'ReplyKeyboardMarkup(keyboard=[';
-            for (let i = 0; i < gametypes.length; i++) {
-                keyboard += '[KeyboardButton(text="' + gametypes[i].type + '")],';
-            }
-            keyboard = keyboard.substring(0, keyboard.length - 1);
-            keyboard += '],selective=true,one_time_keyboard=true)';
-            console.log("DEBUG: Keyboard: " + keyboard);
+                console.log("DEBUG: Creating Keyboard");
+                console.log("DEBUG: gametypes: " + gametypes);
+                // Create reply keyboard
+                let keyboard = 'ReplyKeyboardMarkup(keyboard=[';
+                for (let i = 0; i < gametypes.length; i++) {
+                    keyboard += '[KeyboardButton(text="' + gametypes[i].type + '")],';
+                }
+                keyboard = keyboard.substring(0, keyboard.length - 1);
+                keyboard += '],selective=true,one_time_keyboard=true)';
+                console.log("DEBUG: Keyboard: " + keyboard);
 
-            sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
-                "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
-                , {reply_markup: keyboard});
-            console.log("DEBUG: Message Sent");
-            break;
-        case -1:
-            sendTextMessage(msg.chat.id, "A DB Exception has occurred. Please try creating a game again later");
-            break;
-        case -2:
-            sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
-            let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
-            if (rec == null) return;
+                sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
+                    "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
+                    , {reply_markup: keyboard});
+                console.log("DEBUG: Message Sent");
+                break;
+            case -1:
+                sendTextMessage(msg.chat.id, "A DB Exception has occurred. Please try creating a game again later");
+                break;
+            case -2:
+                sendTextMessage(msg.chat.id, "A DB Exception has occurred trying to add the creator into the game. Abandoning the game...");
+                let rec = database.getActiveGameRecord(dbConnection, msg.chat.id);
+                if (rec == null) return;
 
-            if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
-                sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
-                return;
-            }
-            break;
-    }
+                if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
+                    sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+                    return;
+                }
+                break;
+        }
+    });
 });
 
 // Matches "/start_game"
@@ -213,6 +216,18 @@ bot.onText(/\/guess\b/, (msg, match) => {
 
     // TODO: Write TODOs
     sendTextMessage(msg.chat.id, "W.I.P Check back later!");
+});
+
+// Matches "/about"
+console.log('Registering About Bot command');
+bot.onText(/\/about\b/, (msg, match) => {
+    fs.readFile('./version.txt', 'utf8', (err, data) => {
+        if (err) sendTextMessage(msg.chat.id, "Command error. Try again later");
+        else {
+            let message = "About This Bot\n\nVersion: " + data;
+            sendTextMessage(msg.chat.id, message);
+        }
+    });
 });
 
 console.log('Registering any messages receiver');
