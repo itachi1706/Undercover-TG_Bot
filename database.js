@@ -92,28 +92,28 @@ module.exports.getQuestionList = function (db, callback) {
  * NOTE: MAKE SURE THIS IS ALREADY IN A GROUP BEFORE CREATING
  * @param db Database Object
  * @param msg Message Object
- * @param __callback Callback function
+ * @param callback Callback function
  * @return int 0 - cannot start (no qns), 1 - started, -1 - DB Error, -2 - DB Error and abandon game
  */
-module.exports.createGame = function (db, msg, __callback) {
+module.exports.createGame = function (db, msg, callback) {
     module.exports.getQuestionList(db, (questions) => {
         module.exports.addUser(db, msg, (r) => {
-            if (questions.length === 0) return __callback(0); // Cannot start game. No questions
+            if (questions.length === 0) return callback(0); // Cannot start game. No questions
             let questionId = common.randomInt(0, questions.length - 1);
             db.query("INSERT INTO gamedata SET ?", {chat_id: msg.chat.id, playercount: 1, question: questionId}, (err, r, f) => {
-                if (err) return  __callback(-1);
+                if (err) return  callback(-1);
                 let qid = r.insertId;
                 // Add user in too
                 db.query("SELECT id from players WHERE player_id = ?", [msg.from.id], (err, r, f) => {
-                    if (err) return  __callback(-2);
+                    if (err) return  callback(-2);
                     let playerId = r[0].id;
                     db.query("INSERT INTO game_players SET ?", {player_id: playerId, game_id: qid}, (err, r, f) => {
-                        if (err) return  __callback(-2);
-                        return  __callback(1);
+                        if (err) return  callback(-2);
+                        return  callback(1);
                     });
                 });
             });
-            return  __callback(-1);
+            return  callback(-1);
         });
     }); // Just in case the user is not inside
 };
@@ -133,9 +133,9 @@ module.exports.updateGameState = function (db, gameId, newState) {
     });
 };
 
-module.exports.getGameTypes = function (db) {
+module.exports.getGameTypes = function (db, callback) {
     db.query("SELECT * FROM gametype", (err, r, f) => {
-        if (err) return new Array(0);
-        return r;
+        if (err) return callback(new Array(0));
+        return callback(r);
     });
 };
