@@ -125,10 +125,10 @@ module.exports.getActiveGameRecord = function (db, chat_id, callback) {
     });
 };
 
-module.exports.updateGameState = function (db, gameId, newState) {
+module.exports.updateGameState = function (db, gameId, newState, callback) {
     db.query("UPDATE gamedata SET state = ? WHERE id = ?", [newState, gameId], (err, r, f) => {
-        if (err) return false; // Cannot Update
-        return true;
+        if (err) return callback(false); // Cannot Update
+        return callback(true);
     });
 };
 

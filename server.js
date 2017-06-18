@@ -90,7 +90,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                         for (let i = 0; i < gametypes.length; i++) {
                             keyboard.push([gametypes[i].type]);
                         }
-                        let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true};
+                        let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true, resize_keyboard: true};
 
                         sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
                             "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
@@ -111,9 +111,9 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                     database.getActiveGameRecord(dbConnection, msg.chat.id, (rec) => {
                         if (rec == null) return;
 
-                        if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
-                            sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
-                        }
+                        database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED, (res) => {
+                            if (!res) sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+                        });
                     });
                     break;
             }
@@ -164,12 +164,10 @@ bot.onText(/\/abandon\b/, (msg, match) => {
             return;
         }
 
-        if (!database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED)) {
-            sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
-            return;
-        }
-
-        sendTextMessage(msg.chat.id, "Abandoned game in " + msg.chat.title + " (Game #" + rec.id + ")");
+        database.updateGameState(dbConnection, rec.id, commons.STATE_ABANDONED, (res) => {
+            if (!res) sendTextMessage(msg.chat.id, "Unable to abandon game (id: " + rec.id + "). Try again later");
+            else sendTextMessage(msg.chat.id, "Abandoned game in " + msg.chat.title + " (Game #" + rec.id + ")");
+        });
     });
 });
 
