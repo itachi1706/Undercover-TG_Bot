@@ -76,7 +76,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
             return;
         }
 
-        database.createGame(dbConnection, msg, (res) => {
+        database.createGame(dbConnection, msg, (res, gameid) => {
             switch (res) {
                 case 0:
                     sendTextMessage(msg.chat.id, "Unable to create a new game, there are no Answers. " +
@@ -92,7 +92,7 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                         }
                         let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true, resize_keyboard: true};
 
-                        sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
+                        sendTextMessage(msg.chat.id, "A new game (#" + gameid + ") has been created for " + msg.chat.title + "!\n" +
                             "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
                             , {reply_markup: reply, reply_to_message_id: msg.message_id})
                             .then((msg) => {
