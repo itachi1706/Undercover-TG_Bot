@@ -2,6 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const config = require('./config.js');
 const commons = require('./common-methods.js');
 const database = require('./database.js');
+const util = require('util');
 
 console.log('Initializing Telegram Bot...');
 
@@ -111,14 +112,14 @@ bot.onText(/\/accuse (.+)/, (msg, match) => {
 console.log('Registering any messages receiver');
 bot.on('message', (msg) => {
     // Add user to DB
-    console.log("Message Received: " + msg);
+    console.log("Message Received: " + util.inspect(msg, {depth:null}));
     database.addUser(dbConnection, msg);
 });
 
 function sendTextMessage(chatId, msg, options = {}) {
     let promise = bot.sendMessage(chatId, msg, options);
     promise.then((msg) => {
-        console.log("Sent Message: " + msg);
+        console.log("Sent Message: " + util.inspect(msg, {depth:null}));
     })
 }
 
