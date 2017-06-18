@@ -144,14 +144,16 @@ bot.onText(/\/start_game\b/, (msg, match) => {
 // Matches "/join"
 console.log('Registering Join Game command');
 bot.onText(/\/join\b/, (msg, match) => {
-    /*if (!commons.isGroup(msg)) {
+    if (!commons.isGroup(msg)) {
         sendTextMessage(msg.chat.id, "This command can only be used in a group!");
         return;
-    }*/
+    }
 
-    // TODO: Joins the game if its created but not started (state 0)
-    // TODO: Otherwise dont join game
-    sendTextMessage(msg.chat.id, "W.I.P Check back later!");
+    database.joinGame(dbConnection, msg, (result, gid) => {
+        if (!result) sendTextMessage(msg.chat.id, "Unable to join the game\n\n" +
+            "The game may have already started, does not exist, or an error has occurred");
+        sendTextMessage(msg.chat.id, "Successfully joined the game at " + msg.chat.title + " (Game #" + gid + ")!")
+    });
 });
 
 // Matches "/abandon"

@@ -104,16 +104,35 @@ module.exports.createGame = function (db, msg, callback) {
                 if (err) return callback(-1, 0);
                 let qid = r.insertId;
                 // Add user in too
-                db.query("SELECT id from players WHERE player_id = ?", [msg.from.id], (err, r, f) => {
-                    if (err) return  callback(-2, 0);
+                db.query("SELECT id from players WHERE player_id = ? AND chat_id = ?", [msg.from.id, msg.chat.id], (err, r, f) => {
+                    if (err) return callback(-2, 0);
                     let playerId = r[0].id;
                     db.query("INSERT INTO game_players SET ?", {player_id: playerId, game_id: qid}, (err, r, f) => {
-                        if (err) return  callback(-2, 0);
-                        return  callback(1, qid);
+                        if (err) return callback(-2, 0);
+                        return callback(1, qid);
                     });
                 });
             });
         });
+    });
+};
+
+module.exports.joinGame = function (db, msg, callback) {
+    module.exports.addUser(db, msg, (r) => {
+        db.query("SELECT * FROM players WHERE player_id = ? AND chat_id = ?", [msg.from.id, msg.chat.id], (err, r, f) => {
+            if (err) return callback(false, 0);
+            if (r == null) return callback(false, 0);
+            if (r.length === 0) return callback(false, 0);
+            let pid = r[0].id;
+
+            module.exports.getActiveGameRecord(db, msg.chat.id, (res) => {
+               if (res.state === 1) return callback(false, 0);
+                db.query("INSERT INTO game_players SET ?", {player_id: r[0].id, game_id: res.id}, (err, r, f) => {
+                    if (err) return callback(false, 0);
+                    return callback(true, res.id);
+                })
+            });
+        })
     });
 };
 
