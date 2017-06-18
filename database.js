@@ -29,19 +29,23 @@ module.exports.createAnswer = function (db, answer, fake_answer, type) {
  * Add a user if they do not exist
  * @param db Database Object
  * @param msg Telegram Message Object
+ * @param callback Callback object with the return var
  * @return boolean true if success, false otherwise
  */
-module.exports.addUser = function (db, msg) {
-    if (msg.chat.type === "channel") return false;
+module.exports.addUser = function (db, msg, callback) {
+    if (msg.chat.type === "channel") return callback(false);
     if (msg.chat.type === "private") {
         // Personal Chat, add to chat
-        db.query("INSERT IGNORE INTO players_private SET ?", {player_id: msg.from.id, chat_id: msg.chat.id}, (error, res, f) => {
+        db.query("INSERT IGNORE INTO players_private SET ?", {
+            player_id: msg.from.id,
+            chat_id: msg.chat.id
+        }, (error, res, f) => {
             if (error) {
                 console.log("An error occurred adding a user private chat. Error: " + error.stack);
                 console.log("User: " + msg.from.id + " | Chat: " + msg.chat.id);
-                return false;
+                return callback(false);
             }
-            return true;
+            return callback(true);
         });
     } else {
         // Group or Supergroup
@@ -54,7 +58,7 @@ module.exports.addUser = function (db, msg) {
             if (err) {
                 console.log("An error occurred adding a new user. Error: " + err.stack);
                 console.log("User: " + msg.from.id + " | Chat: " + msg.chat.id);
-                return false;
+                return callback(false);
             }
         });
         // Update stats
@@ -62,23 +66,24 @@ module.exports.addUser = function (db, msg) {
             [name, msg.chat.title, msg.chat.type, msg.from.id, msg.chat.id], (err, r, f) => {
                 if (err) console.log("Failed to update user details. Using old details. Error: " + err.stack);
             });
-        return true;
+        return callback(true);
     }
 };
 
 /**
  * Get list of questions
  * @param db Database Object
+ * @param callback Callback object with the return object
  * @return array Array of Questions
  */
-module.exports.getQuestionList = function (db) {
+module.exports.getQuestionList = function (db, callback) {
     db.query("SELECT * FROM questions", (err, result, f) => {
         if (err) {
             console.log("Error retrieving list, returning empty array");
-            return new Array(0);
+            return callback(new Array(0));
         }
 
-        return result;
+        return callback(result);
     });
 };
 
@@ -90,26 +95,27 @@ module.exports.getQuestionList = function (db) {
  * @return int 0 - cannot start (no qns), 1 - started, -1 - DB Error, -2 - DB Error and abandon game
  */
 module.exports.createGame = function (db, msg) {
-    let questions = module.exports.getQuestionList(db);
-    module.exports.addUser(db, msg); // Just in case the user is not inside
-    if (questions.length === 0) return 0; // Cannot start game. No questions
-
-    let questionId = common.randomInt(0, questions.length - 1);
-
-    db.query("INSERT INTO gamedata SET ?", {chat_id: msg.chat.id, playercount: 1, question: questionId}, (err, r, f) => {
-        if (err) return -1;
-        let qid = r.insertId;
-        // Add user in too
-        db.query("SELECT id from players WHERE player_id = ?", [msg.from.id], (err, r, f) => {
-            if (err) return -2;
-            let playerId = r[0].id;
-            db.query("INSERT INTO game_players SET ?", {player_id: playerId, game_id: qid}, (err, r, f) => {
-                if (err) return -2;
-                return 0;
+    module.exports.getQuestionList(db, (questions) => {
+        module.exports.addUser(db, msg, (r) => {
+            if (questions.length === 0) return 0; // Cannot start game. No questions
+            let questionId = common.randomInt(0, questions.length - 1);
+            db.query("INSERT INTO gamedata SET ?", {chat_id: msg.chat.id, playercount: 1, question: questionId}, (err, r, f) => {
+                if (err) return -1;
+                let qid = r.insertId;
+                // Add user in too
+                db.query("SELECT id from players WHERE player_id = ?", [msg.from.id], (err, r, f) => {
+                    if (err) return -2;
+                    let playerId = r[0].id;
+                    db.query("INSERT INTO game_players SET ?", {player_id: playerId, game_id: qid}, (err, r, f) => {
+                        if (err) return -2;
+                        return 0;
+                    });
+                });
             });
+            return -1;
         });
-    });
-    return -1;
+    }); // Just in case the user is not inside
+
 };
 
 module.exports.getActiveGameRecord = function (db, chat_id) {
@@ -129,7 +135,7 @@ module.exports.updateGameState = function (db, gameId, newState) {
 
 module.exports.getGameTypes = function (db) {
     db.query("SELECT * FROM gametype", (err, r, f) => {
-       if (err) return new Array(0);
-       return r;
+        if (err) return new Array(0);
+        return r;
     });
 };

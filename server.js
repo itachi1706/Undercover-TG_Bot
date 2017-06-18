@@ -214,7 +214,7 @@ console.log('Registering any messages receiver');
 bot.on('message', (msg) => {
     // Add user to DB
     if (config.debug) console.log("Message Received: " + util.inspect(msg, {depth:null}));
-    database.addUser(dbConnection, msg);
+    database.addUser(dbConnection, msg, (r) => {});
 });
 
 function sendTextMessage(chatId, msg, options = {}) {
