@@ -22,6 +22,13 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
     sendTextMessage(msg.chat.id, match[1]);
 });
 
+// Matches "/test [whatever]"
+console.log('Registering test command');
+bot.onText(/\/test (.+)/, (msg, match) => {
+    sendTextMessage(msg.chat.id, match[1] + " @itachi1706 [K S](http://telegram.me/itachi1706)",
+        {parse_mode: "Markdown", disable_web_page_preview: true});
+});
+
 // Matches "/gadmin_add <ans> <fake> [type]"
 console.log("Registering Global Admin Add Answer Command");
 bot.onText(/\/gadmin_add (.+)/, (msg, match) => {
@@ -75,22 +82,20 @@ bot.onText(/\/create_game\b/, (msg, match) => {
                 break;
             case 1:
                 // Game Created
-                console.log("DEBUG: Game Created");
                 database.getGameTypes(dbConnection, (gametypes) => {
-                    console.log("DEBUG: Creating Keyboard");
-                    console.log("DEBUG: gametypes: " + gametypes);
                     // Create reply keyboard
                     let keyboard = [];
                     for (let i = 0; i < gametypes.length; i++) {
                         keyboard.push([gametypes[i].type]);
                     }
-                    let reply = {keyboard: [keyboard], one_time_keyboard: true, selective: true};
-                    console.log("DEBUG: Keyboard: " + util.inspect(reply, {depth:null}));
+                    let reply = {keyboard: keyboard, one_time_keyboard: true, selective: true, resize_keyboard: true};
 
                     sendTextMessage(msg.chat.id, "A new game has been created for " + msg.chat.title + "!\n" +
                         "\nGame creator should now choose a game mode or it will use the default gamemode (Undercover) when the game starts!"
-                        , {reply_markup: reply});
-                    console.log("DEBUG: Message Sent");
+                        , {reply_markup: reply, reply_to_message_id: msg.chat.id})
+                        .then((msg) => {
+                        sendTextMessage(msg.chat.id, "Selected: " + msg.text, {reply_markup:{remove_keyboard:true}});
+                        });
                 });
                 break;
             case -1:
@@ -240,7 +245,8 @@ function sendTextMessage(chatId, msg, options = {}) {
     let promise = bot.sendMessage(chatId, msg, options);
     promise.then((msg) => {
         if (config.debug) console.log("Sent Message: " + util.inspect(msg, {depth:null}));
-    })
+    });
+    return promise;
 }
 
 console.log('Finished initializing Telegram Bot!');
