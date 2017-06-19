@@ -163,8 +163,17 @@ bot.onText(/\/join\b/, (msg, match) => {
 
     database.joinGame(dbConnection, msg, (result, gid) => {
         if (!result) {
-            sendTextMessage(msg.chat.id, "Unable to join the game\n\n" +
-                "The game may have already started, does not exist, or an error has occurred");
+            let reason = "";
+            switch (gid) {
+                case 0:
+                case -1:
+                case -2: reason = "An error occurred retrieving your details from the server"; break;
+                case -3: reason = "There are currently no active games in this chat"; break;
+                case -4: reason = "The game has already started"; break;
+                case -5: reason = "Unable to join you into the game"; break;
+                default: reason = "An Unknown error has occurred when attempting to join you to the game"; break;
+            }
+            sendTextMessage(msg.chat.id, "Unable to join the game\n\n" + reason);
             console.log("ERROR JOIN GAME: " + gid);
         } else sendTextMessage(msg.chat.id, "Successfully joined the game at " + msg.chat.title + " (Game #" + gid + ")!")
     });
